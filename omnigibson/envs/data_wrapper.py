@@ -305,8 +305,8 @@ class DataCollectionWrapper(DataWrapper):
         og.sim.viewer_camera.active_camera_path = viewport_camera_path
 
         # Use asynchronous rendering for faster performance
-        lazy.carb.settings.get_settings().set_bool("/app/asyncRendering", True)
-        lazy.carb.settings.get_settings().set_bool("/app/asyncRenderingLowLatency", True)
+        # lazy.carb.settings.get_settings().set_bool("/app/asyncRendering", True)
+        # lazy.carb.settings.get_settings().set_bool("/app/asyncRenderingLowLatency", True)
 
         # Disable mouse grabbing since we're only using the UI passively
         lazy.carb.settings.get_settings().set_bool("/physics/mouseInteractionEnabled", False)
@@ -342,9 +342,16 @@ class DataCollectionWrapper(DataWrapper):
         step_data["action"] = action
         step_data["state"] = state
         step_data["state_size"] = len(state)
+        step_data["observation"] = obs["task"]["low_dim"]
         step_data["reward"] = reward
         step_data["terminated"] = terminated
         step_data["truncated"] = truncated
+
+        # Add additional BRI info
+        # 1. Add neural
+        step_data["neural"] = self.env.task.controller.state_dict["neural"].copy()
+        # 2. Add ground truth intent
+        step_data["intent"] = self.env.task.get_current_intent()
 
         # Update max state size
         self.max_state_size = max(self.max_state_size, len(state))
