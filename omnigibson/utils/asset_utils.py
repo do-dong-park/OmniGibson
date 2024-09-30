@@ -56,6 +56,7 @@ def get_og_avg_category_specs():
         dict: Average category specifications for all object categories
     """
     avg_obj_dim_file = os.path.join(gm.DATASET_PATH, "metadata", "avg_category_specs.json")
+    print(avg_obj_dim_file)
     if os.path.exists(avg_obj_dim_file):
         with open(avg_obj_dim_file) as f:
             return json.load(f)
